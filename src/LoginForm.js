@@ -1,6 +1,6 @@
-// LoginForm.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const LoginForm = () => {
     const [formData, setFormData] = useState({
@@ -9,7 +9,7 @@ const LoginForm = () => {
     });
 
     const [errors, setErrors] = useState({});
-
+    const [errorMessage, setErrorMessage] = useState(''); // Dodaj nowy stan na komunikat błędu
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -57,18 +57,47 @@ const LoginForm = () => {
                     console.log('Received token:', token);
                     localStorage.setItem('token', token);
 
-                    // Navigate to the main dashboard after successful login
-                    navigate('/dashboard');
+                    // Extract role from the token
+                    const decodedToken = jwtDecode(token);
+                    const userRole = decodedToken.role;
+
+                    // Navigate based on the user's role
+                    switch (userRole) {
+                        case 'ADMIN':
+                            navigate('/adminDashboard');
+                            break;
+                        case 'RECRUITER':
+                            navigate('/recruiterDashboard');
+                            break;
+                        case 'REGISTERED_USER':
+                            navigate('/userDashboard');
+                            break;
+                        default:
+                            console.error('Unknown user role');
+                            break;
+                    }
+                } else if (response.status === 404) {
+                    setErrorMessage('Invalid email or password');
+                    console.error('Invalid email or password');
                 } else {
-                    const errorMessage = await response.text();
-                    console.error('Login failed:', errorMessage);
+                    const errorData = await response.json();
+
+                    // Check if the response contains error details
+                    if (errorData.message) {
+                        setErrors({
+                            email: errorData.message,
+                            password: '',
+                        });
+                        console.error('Login failed:', errorData.message);
+                    } else {
+                        console.error('Login failed. No error details provided.');
+                    }
                 }
             } catch (error) {
                 console.error('Error during login:', error.message);
             }
         }
     };
-
 
     const handleGoBack = () => {
         navigate('/');
@@ -110,6 +139,8 @@ const LoginForm = () => {
                 <button type="button" onClick={handleGoBack} style={styles.button}>
                     Go back to Home
                 </button>
+
+                {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
             </form>
         </div>
     );
@@ -158,6 +189,11 @@ const styles = {
     error: {
         color: 'red',
         marginTop: '4px',
+    },
+    errorMessage: {
+        color: 'red',
+        marginTop: '10px',
+        textAlign: 'center',
     },
 };
 

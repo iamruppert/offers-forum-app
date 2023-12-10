@@ -1,4 +1,3 @@
-// RegisterForm.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +13,7 @@ const RegisterForm = () => {
     });
 
     const [errors, setErrors] = useState({});
-
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
     const handleInputChange = (e) => {
@@ -29,16 +28,17 @@ const RegisterForm = () => {
         const newErrors = {};
 
         // Validate each form field
-        if (!formData.name.trim()) {
-            newErrors.name = 'Name is required';
+        if (!formData.name.trim() || !/^[A-Za-z]+$/.test(formData.name.trim())) {
+            newErrors.name = 'Name is required and should contain only letters';
         }
-        if (!formData.surname.trim()) {
-            newErrors.surname = 'Surname is required';
+
+        if (!formData.surname.trim() || !/^[A-Za-z]+$/.test(formData.surname.trim())) {
+            newErrors.surname = 'Surname is required and should contain only letters';
         }
         if (!formData.pesel.trim() || !/^\d{11}$/.test(formData.pesel.trim())) {
             newErrors.pesel = 'Pesel must be 11 digits';
         }
-        if (!formData.country) {
+        if (!formData.country.trim()) {
             newErrors.country = 'Country is required';
         }
         if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
@@ -75,14 +75,16 @@ const RegisterForm = () => {
                     const { token } = await response.json();
                     console.log('Received token:', token);
                     localStorage.setItem('token', token);
-                    // Optionally, you can navigate to another page after successful registration
                     navigate('/');
+                    setSuccessMessage('User registered successfully!');
                 } else {
                     const errorMessage = await response.text();
                     console.error('Registration failed:', errorMessage);
+                    setSuccessMessage('');
                 }
             } catch (error) {
                 console.error('Error during registration:', error.message);
+                setSuccessMessage('');
             }
         }
     };
@@ -148,6 +150,9 @@ const RegisterForm = () => {
                         </option>
                         <option value="Poland">Poland</option>
                         <option value="USA">USA</option>
+                        <option value="Germany">Germany</option>
+                        <option value="France">France</option>
+                        {/* Add more countries as needed */}
                     </select>
                     {errors.country && <span style={styles.error}>{errors.country}</span>}
                 </label>
@@ -197,6 +202,8 @@ const RegisterForm = () => {
                 <button type="button" onClick={handleGoBack} style={styles.button}>
                     Go back to Home
                 </button>
+
+                {successMessage && <p style={styles.successMessage}>{successMessage}</p>}
             </form>
         </div>
     );
@@ -245,6 +252,11 @@ const styles = {
     error: {
         color: 'red',
         marginTop: '4px',
+    },
+    successMessage: {
+        color: 'green',
+        marginTop: '10px',
+        textAlign: 'center',
     },
 };
 
