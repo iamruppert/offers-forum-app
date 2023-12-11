@@ -1,0 +1,17 @@
+.link,
+.logout {
+    cursor: pointer;
+    color: black; /* Kolor linków */
+    text-decoration: none; /* Usunięcie podkreślenia */
+}
+
+.link:hover,
+.logout:hover {
+    text-decoration: underline; /* Podkreślenie po najechaniu */
+}
+
+.text-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

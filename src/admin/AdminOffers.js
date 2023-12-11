@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-class Home extends Component {
+class AdminOffers extends Component {
     constructor(props) {
         super(props);
 
@@ -20,24 +19,10 @@ class Home extends Component {
     }
 
     componentDidMount() {
-        this.fetchOffers();
-
-        // Disable navigation using the browser's back button
-        window.history.pushState(null, null, window.location.pathname);
-        window.addEventListener('popstate', this.preventBackNavigation);
+        this.fetchAdminOffers();
     }
 
-    componentWillUnmount() {
-        // Remove the event listener when the component is unmounted
-        window.removeEventListener('popstate', this.preventBackNavigation);
-    }
-
-    preventBackNavigation = (event) => {
-        // Push a new state to prevent going back
-        window.history.pushState(null, null, window.location.pathname);
-    };
-
-    fetchOffers = async () => {
+    fetchAdminOffers = async () => {
         const { currentPage, itemsPerPage, sortOption } = this.state;
         try {
             const response = await fetch(`http://localhost:8080/api/listAllOffers?page=${currentPage}&size=${itemsPerPage}&sortBy=${sortOption}`);
@@ -45,19 +30,19 @@ class Home extends Component {
                 const { content, totalPages } = await response.json();
                 this.setState({ offers: { content, totalPages } });
             } else {
-                console.error('Failed to fetch offers:', response.statusText);
+                console.error('Failed to fetch admin offers:', response.statusText);
             }
         } catch (error) {
-            console.error('Error during offer fetch:', error.message);
+            console.error('Error during admin offer fetch:', error.message);
         }
     };
 
     handlePageChange = (newPage) => {
-        this.setState({ currentPage: newPage }, () => this.fetchOffers());
+        this.setState({ currentPage: newPage }, () => this.fetchAdminOffers());
     };
 
     handleSortChange = (newSortOption) => {
-        this.setState({ sortOption: newSortOption }, () => this.fetchOffers());
+        this.setState({ sortOption: newSortOption }, () => this.fetchAdminOffers());
     };
 
     render() {
@@ -66,15 +51,8 @@ class Home extends Component {
 
         return (
             <div className="container mt-4">
-                <div className="d-flex justify-content-between align-items-center mb-4">
-                    <h2 className="mx-auto">NoFluffCareers</h2>
+                <div className="d-flex justify-content-end mb-4"> {/* Change justify-content-between to justify-content-end */}
                     <div className="d-flex gap-2">
-                        <Link to="/register" className="btn btn-success">
-                            Register
-                        </Link>
-                        <Link to="/login" className="btn btn-primary">
-                            Login
-                        </Link>
                         <div className="dropdown">
                             <button className="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 Sort By
@@ -143,4 +121,4 @@ class Home extends Component {
     }
 }
 
-export default Home;
+export default AdminOffers;
