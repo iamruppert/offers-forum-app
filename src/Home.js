@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Modal, Button } from 'react-bootstrap';
 
 class Home extends Component {
+
+
     constructor(props) {
         super(props);
 
@@ -16,10 +19,13 @@ class Home extends Component {
             currentPage: 0,
             itemsPerPage: 4,
             sortOption: 'name', // Default sorting option
+            selectedOffer: null,
         };
     }
 
     componentDidMount() {
+
+
         this.fetchOffers();
 
         // Disable navigation using the browser's back button
@@ -60,8 +66,16 @@ class Home extends Component {
         this.setState({ sortOption: newSortOption }, () => this.fetchOffers());
     };
 
+    handleOfferClick = (offer) => {
+        this.setState({ selectedOffer: offer });
+    };
+
+    handleModalClose = () => {
+        this.setState({ selectedOffer: null });
+    };
+
     render() {
-        const { offers, currentPage, itemsPerPage, sortOption } = this.state;
+        const { offers, currentPage, itemsPerPage, sortOption, selectedOffer } = this.state;
         const { content, totalPages } = offers;
 
         return (
@@ -103,10 +117,10 @@ class Home extends Component {
                 <div className="row row-cols-1 row-cols-md-2 g-4">
                     {content.map((offer, index) => (
                         <div key={index} className="col">
-                            <div className="card">
+                            <div className="card" style={{ cursor: 'pointer' }} onClick={() => this.handleOfferClick(offer)}>
                                 <div className="card-body d-flex align-items-center">
                                     <img
-                                        src="https://placekitten.com/100/100"
+                                        src="https://www.worldsbestcatlitter.com/wp-content/uploads/2016/09/cat-affection-blog-image-1.jpg"
                                         alt={`Offer ${index}`}
                                         className="mr-2"
                                         style={{ width: '100px', height: '100px', objectFit: 'cover' }}
@@ -124,6 +138,27 @@ class Home extends Component {
                         </div>
                     ))}
                 </div>
+
+                {selectedOffer && (
+                    <Modal show={selectedOffer !== null} onHide={this.handleModalClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{selectedOffer.name}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>Position: {selectedOffer.position}</p>
+                            <p>Keywords: {selectedOffer.keywords.join(', ')}</p>
+                            <p>Salary: {selectedOffer.salary} {selectedOffer.currency}</p>
+                            <p>Added By: {`${selectedOffer.recruiter.name} ${selectedOffer.recruiter.surname}`}</p>
+                            <p>Email: {selectedOffer.recruiter.email}</p>
+                            {/* Add other details as needed */}
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="secondary" onClick={this.handleModalClose}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                )}
 
                 <div className="d-flex justify-content-center mt-3">
                     <nav>

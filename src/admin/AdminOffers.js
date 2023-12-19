@@ -2,21 +2,20 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import OfferAddForm from '../offer/OfferAddForm';
+import { Modal, Button } from 'react-bootstrap';
 
 class AdminOffers extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            offers: {
-                content: [],
-                totalPages: 0,
-            },
-            currentPage: 0,
-            itemsPerPage: 4,
-            sortOption: 'name', // Default sorting option
-        };
-    }
+    state = {
+        offers: {
+            content: [],
+            totalPages: 0,
+        },
+        currentPage: 0,
+        itemsPerPage: 4,
+        sortOption: 'name', // Default sorting option
+        selectedOffer: null,
+    };
 
     componentDidMount() {
         this.fetchAdminOffers();
@@ -37,6 +36,22 @@ class AdminOffers extends Component {
         }
     };
 
+    handleDeleteOffer = async (offerId) => {
+        try {
+            const response = await fetch(`http://localhost:8080/api/recruiter/deleteOffer/${offerId}`, {
+                method: 'DELETE',
+            });
+            if (response.ok) {
+                this.fetchAdminOffers(); // Refresh the offers after deletion
+                this.handleModalClose(); // Close the modal after successful deletion
+            } else {
+                console.error('Failed to delete offer:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error during offer deletion:', error.message);
+        }
+    };
+
     handlePageChange = (newPage) => {
         this.setState({ currentPage: newPage }, () => this.fetchAdminOffers());
     };
@@ -45,13 +60,21 @@ class AdminOffers extends Component {
         this.setState({ sortOption: newSortOption }, () => this.fetchAdminOffers());
     };
 
+    handleOfferClick = (offer) => {
+        this.setState({ selectedOffer: offer });
+    };
+
+    handleModalClose = () => {
+        this.setState({ selectedOffer: null });
+    };
+
     render() {
-        const { offers, currentPage, itemsPerPage, sortOption } = this.state;
+        const { offers, currentPage, itemsPerPage, sortOption, selectedOffer } = this.state;
         const { content, totalPages } = offers;
 
         return (
             <div className="container mt-4">
-                <div className="d-flex justify-content-end mb-4"> {/* Change justify-content-between to justify-content-end */}
+                <div className="d-flex justify-content-end mb-4">
                     <div className="d-flex gap-2">
                         <div className="dropdown">
                             <button className="btn btn-secondary dropdown-toggle" type="button" id="sortDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -75,12 +98,18 @@ class AdminOffers extends Component {
                                 </li>
                             </ul>
                         </div>
+                        <OfferAddForm />
                     </div>
                 </div>
 
                 <div className="row row-cols-1 row-cols-md-2 g-4">
                     {content.map((offer, index) => (
-                        <div key={index} className="col">
+                        <div
+                            key={index}
+                            className="col"
+                            style={{ cursor: 'pointer' }}
+                            onClick={() => this.handleOfferClick(offer)}
+                        >
                             <div className="card">
                                 <div className="card-body d-flex align-items-center">
                                     <img
@@ -102,6 +131,30 @@ class AdminOffers extends Component {
                         </div>
                     ))}
                 </div>
+
+                {selectedOffer && (
+                    <Modal show={selectedOffer !== null} onHide={this.handleModalClose}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>{selectedOffer.name}</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <p>Position: {selectedOffer.position}</p>
+                            <p>Keywords: {selectedOffer.keywords.join(', ')}</p>
+                            <p>Salary: {selectedOffer.salary} {selectedOffer.currency}</p>
+                            <p>Added By: {`${selectedOffer.recruiter.name} ${selectedOffer.recruiter.surname}`}</p>
+                            <p>Email: {selectedOffer.recruiter.email}</p>
+                            {/* Add other details as needed */}
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button variant="danger" onClick={() => this.handleDeleteOffer(selectedOffer.offerId)}>
+                                <i className="fas fa-trash"></i> Delete
+                            </Button>
+                            <Button variant="secondary" onClick={this.handleModalClose}>
+                                Close
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                )}
 
                 <div className="d-flex justify-content-center mt-3">
                     <nav>

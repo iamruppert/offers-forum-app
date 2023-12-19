@@ -69,7 +69,7 @@ function RegisterRecruiterForm() {
     const autoCloseAlerts = (isSuccess) => {
         setTimeout(() => {
             setShow(true);
-            setAlertMessage(isSuccess ? 'Recruiter registered successfully!' : 'Recruiter registered failed! ');
+            setAlertMessage(isSuccess ? 'Admin registered successfully!' : 'Admin registered failed! ');
             setAlertVariant(isSuccess ? 'success' : 'danger');
             setSuccessMessage('');
             setFormData({
@@ -89,7 +89,7 @@ function RegisterRecruiterForm() {
 
         if (validateForm()) {
             try {
-                const response = await fetch('http://localhost:8080/api/admin/createRecruiter', {
+                const response = await fetch('http://localhost:8080/api/admin/createAdmin', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ function RegisterRecruiterForm() {
         <>
             <li className="list-group-item" style={{ fontSize: '40px', cursor: 'pointer' }} onClick={handleShow}>
                 <FaUserPlus style={{ marginRight: '10px' }} />
-                Add recruiter
+                Add admin
             </li>
 
             <Modal
@@ -124,7 +124,7 @@ function RegisterRecruiterForm() {
                 keyboard={false}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>Register new recruiter</Modal.Title>
+                    <Modal.Title>Register new admin</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <form style={styles.form} onSubmit={handleSubmit}>

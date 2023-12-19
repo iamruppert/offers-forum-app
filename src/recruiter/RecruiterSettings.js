@@ -2,15 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {FaKey, FaUserPlus, FaUserShield} from "react-icons/fa";
-import RegisterRecruiterForm from "./RegisterRecruiterForm";
-import RegisterAdminForm from "./RegisterAdminForm";
 
-const Settings = () => {
+const RecruiterSettings = () => {
     const navigate = useNavigate();
-
-    function handleRecruiterClick() {
-        navigate('/settings/registerRecruiter');
-    }
 
     return (
         <div className="container mt-4">
@@ -20,17 +14,14 @@ const Settings = () => {
             </h2>
             <div className="text-center">
                 <ul className="list-group">
-
-                    <RegisterRecruiterForm/>
-                    <RegisterAdminForm/>
-                    {/*<li className="list-group-item" style={{fontSize: '40px'}}>*/}
-                    {/*    <FaUserShield style={{marginRight: '10px'}}/>*/}
-                    {/*    Add admin*/}
-                    {/*</li>*/}
+                    <li className="list-group-item" style={{fontSize: '40px'}}>
+                        <FaKey style={{marginRight: '10px'}}/>
+                        Change password
+                    </li>
                 </ul>
             </div>
         </div>
     );
 };
 
-export default Settings;
+export default RecruiterSettings;

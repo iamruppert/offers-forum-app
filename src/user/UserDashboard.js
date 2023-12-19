@@ -1,12 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCog, FaSignOutAlt, FaUsers } from 'react-icons/fa';
-import AdminOffers from './AdminOffers';
-import './AdminDashboard.css';
-import {jwtDecode} from "jwt-decode";
-import OfferViewAdminRecruiter from "../offer/OfferViewAdminRecruiter"; // Dodaj import pliku ze stylami
+import { FaCog, FaSignOutAlt, FaUsers, FaHeart } from 'react-icons/fa'; // Dodaj ikonę serca
+import { jwtDecode } from 'jwt-decode';
+import OfferViewAdminRecruiter from '../offer/OfferViewAdminRecruiter';
 
-const AdminDashboard = () => {
+const UserDashboard = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -15,22 +13,21 @@ const AdminDashboard = () => {
     };
 
     const handleSettings = () => {
-        navigate('/settings');
+        navigate('/recruiterSettings');
     };
 
-    const handleUsers = () => {
-        navigate('/users');
+    // Dodaj funkcję do nawigacji do ulubionych ofert
+    const handleFavorites = () => {
+        navigate('/favorites');
     };
 
     const [userEmail, setUserEmail] = useState('');
 
     useEffect(() => {
-        // Pobierz token z localStorage
         const token = localStorage.getItem('token');
 
         if (token) {
             try {
-                // Odczytaj e-mail z tokena i zaktualizuj stan
                 const decodedToken = jwtDecode(token);
                 const userEmail = decodedToken.sub;
                 setUserEmail(userEmail);
@@ -49,12 +46,14 @@ const AdminDashboard = () => {
 
                 <div className="d-flex gap-2 align-items-center">
                     <div className="d-flex flex-column align-items-start">
-                        <p><strong>Logged in as:</strong> {userEmail}</p>
+                        <p>
+                            <strong>Logged in as:</strong> {userEmail}
+                        </p>
                         <div className="d-flex gap-2">
-                            <Link to="/settings" className="link">
+                            <Link to="/user/favorites" className="link">
                                 <span className="icon-text">
-                                    <FaCog style={{ fontSize: '24px' }} />
-                                    Settings
+                                    <FaHeart style={{ fontSize: '24px' }} />
+                                    Favorites
                                 </span>
                             </Link>
                             <span onClick={handleLogout} className="link logout">
@@ -63,12 +62,6 @@ const AdminDashboard = () => {
                                     Logout
                                 </span>
                             </span>
-                            <Link to="/users" className="link">
-                                <span className="icon-text">
-                                    <FaUsers style={{ fontSize: '24px' }} />
-                                    Users
-                                </span>
-                            </Link>
                         </div>
                     </div>
                 </div>
@@ -79,4 +72,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default UserDashboard;

@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCog, FaSignOutAlt, FaUsers } from 'react-icons/fa';
-import AdminOffers from './AdminOffers';
-import './AdminDashboard.css';
 import {jwtDecode} from "jwt-decode";
 import OfferViewAdminRecruiter from "../offer/OfferViewAdminRecruiter"; // Dodaj import pliku ze stylami
 
-const AdminDashboard = () => {
+const RecruiterDashboard = () => {
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -15,12 +13,9 @@ const AdminDashboard = () => {
     };
 
     const handleSettings = () => {
-        navigate('/settings');
+        navigate('/recruiterSettings');
     };
 
-    const handleUsers = () => {
-        navigate('/users');
-    };
 
     const [userEmail, setUserEmail] = useState('');
 
@@ -51,24 +46,18 @@ const AdminDashboard = () => {
                     <div className="d-flex flex-column align-items-start">
                         <p><strong>Logged in as:</strong> {userEmail}</p>
                         <div className="d-flex gap-2">
-                            <Link to="/settings" className="link">
-                                <span className="icon-text">
-                                    <FaCog style={{ fontSize: '24px' }} />
-                                    Settings
-                                </span>
-                            </Link>
+                            {/*<Link to="/recruiterSettings" className="link">*/}
+                            {/*    <span className="icon-text">*/}
+                            {/*        <FaCog style={{ fontSize: '24px' }} />*/}
+                            {/*        Settings*/}
+                            {/*    </span>*/}
+                            {/*</Link>*/}
                             <span onClick={handleLogout} className="link logout">
                                 <span className="icon-text">
                                     <FaSignOutAlt style={{ fontSize: '24px' }} />
                                     Logout
                                 </span>
                             </span>
-                            <Link to="/users" className="link">
-                                <span className="icon-text">
-                                    <FaUsers style={{ fontSize: '24px' }} />
-                                    Users
-                                </span>
-                            </Link>
                         </div>
                     </div>
                 </div>
@@ -79,4 +68,4 @@ const AdminDashboard = () => {
     );
 };
 
-export default AdminDashboard;
+export default RecruiterDashboard;

@@ -6,10 +6,12 @@ import RegisterForm from './RegisterForm';
 import LoginForm from './LoginForm';
 import Dashboard from './Dashboard';
 import AdminDashboard from './admin/AdminDashboard';
-import UserDashboard from "./UserDashboard"; // Import AdminDashboard
+import UserDashboard from "./user/UserDashboard"; // Import AdminDashboard
 import Settings from './admin/Settings';
-import RegisterRecruiterForm from './admin/RegisterRecruiterForm.js'; // Import the form
-
+import RegisterRecruiterForm from './admin/RegisterRecruiterForm.js';
+import UserList from "./admin/UserList";
+import RecruiterDashboard from "./recruiter/RecruiterDashboard";
+import RecruiterSettings from "./recruiter/RecruiterSettings"; // Import the form
 const App = () => {
     return (
         <Router>
@@ -19,7 +21,11 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/adminDashboard" element={<AdminDashboard />} />
                 <Route path="/userDashboard" element={<UserDashboard />} />
+                <Route path="/recruiterDashboard" element={<RecruiterDashboard />} />
                 <Route path="/settings" element={<Settings />} />
+                <Route path="/recruiterSettings" element={<RecruiterSettings />} />
+                <Route path="/users" element={<UserList />} />
+                {/*<Route path="/user/favouites" element={<FavouritesList />} />*/}
                 <Route path="/settings/registerRecruiter" element={<RegisterRecruiterForm />} />
                 <Route path="/" element={<Home />} />
             </Routes>
