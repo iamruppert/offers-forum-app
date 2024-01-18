@@ -41,8 +41,6 @@ React, Bootstrap
 
 ![image](https://github.com/iamruppert/offers-forum-app-front/assets/83641981/acc3a7c6-31ed-47e3-b6b5-dbb32c14e688)
 
-### Welcome page for recruiter
-
 
 
 
